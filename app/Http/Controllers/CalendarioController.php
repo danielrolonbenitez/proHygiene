@@ -46,15 +46,6 @@ class CalendarioController extends Controller {
 
 
 
-    public function cargarEvento(){
-
-           
-         $value=Session::get('key');
-
-          return  $value;
-    }
-
-
 
 
 
@@ -81,65 +72,41 @@ class CalendarioController extends Controller {
 
          
 
-    $destinados=DB::select("select  destinado, fecha from  periodos where periodoNombre='{$periodoNombre}'");
-
-  $cursodescripcions =DB::select("select nombre, desCorto, fecha from periodos as p join cursos as c  on p.idCursoF=c.idCurso where periodoNombre='{$periodoNombre}'");
+  $cursodescripcions =DB::select("select * from periodos as p join cursos as c  on p.idCursoF=c.idCurso where periodoNombre='{$periodoNombre}'");
 
              
       
 
-
-              foreach($destinados as $key=>$destino)
-              {
-                  
-                  $nombre=$destino->destinado;
-                  $fecha=$destino->fecha;
-                 
-
-              
-      
-                    $array1[]=array("title"=>$nombre,"start"=>$fecha,"end"=>$fecha);
-                  
-
-              }
-
-     
-
-
-
-
-
-
-
+    
 
 
 
          foreach($cursodescripcions as $curso)
               {
-                  
-                  $nombre=$curso->nombre;
-                  $desc=$curso->desCorto;
-
+                  $destinadoA=$curso->destinado;
+                  $nombreCurso=$curso->nombre;
+                  $desCurso=$curso->desCorto;
+                  $descripcion=$curso->descripcion;
 
                   $fecha=$curso->fecha;
                  
 
-                $array2[]=array("title"=>$nombre,"description"=>"This is a cool event","start"=>$fecha,"end"=>$fecha);
+                $array2[]=array( "destinadoA"=>$destinadoA,"nombreCurso"=>$nombreCurso,"desCurso"=>$desCurso,"descripcion"=>$descripcion,"fechaI"=>$fecha,"fehcaE"=>$fecha);//obtiene  el nombre del curso
               }
 
 
 
          
 
+
+
           
            
 
-       $json=array_merge($array1,$array2);
+       $json=$array2;
 
          //var_dump($json) or die();
 
-      
-         Session::put('key',$json);
 
       return $json;
     

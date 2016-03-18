@@ -16,7 +16,7 @@
 <div class="row">
 
 		  <!-- Carousel -->
-    <div id="myCarousel" class="carousel slide col-lg-offset-2" data-ride="carousel" style="max-width:700px;box-sizing:border-box;background-color:blue;text-aling:center"  data-interval="false">
+    <div id="myCarousel" class="carousel slide col-lg-offset-2" data-ride="carousel" style="max-width:700px;box-sizing:border-box;background-color:blue;text-aling:center;border-radius:5px 0px 5px 0px"  data-interval="false">
     <!-- Indicators -->
            <div class="carousel-inner">
         <!-- Slider 1 -->
@@ -111,8 +111,8 @@
 
 
 <!--script envia por ajax el valor que tiene la caja -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="{{ asset('js/jquery.min.js')}}"></script>
+  <script src="{{ asset('js/bootstrap.js')}}"></script>
 <script src="{{ asset('js/moment.min.js')}}"></script>
 <script src="{{ asset('js/fullcalendar.min.js')}}"></script>
 <script src="{{ asset('js/es.js')}}"></script>
@@ -131,16 +131,7 @@ $(document).ready(function(){
     $y = $date.getFullYear();
     $fecha=$y+"-"+$m+"-"+$d;
 
-    $('#calendar').fullCalendar({
-      defaultDate: $fecha,
-      editable: false,
-      eventLimit: true, // allow "more" link when too many events
-      lang: 'es',
-      eventOrder: '-title',
-
    
-    });//end calendar//
-
      $.ajax({
                 
                 url:   'r',
@@ -150,17 +141,68 @@ $(document).ready(function(){
                 },
                success:  function (response) {
                         
-             
+              
+
                          
-                console.log(response);
-         $('#calendar').fullCalendar("removeEvents");        
-         $('#calendar').fullCalendar('addEventSource', response);      
+                
+         $('#calendar').fullCalendar("removeEvents");   
+
+
+
+          $('#calendar').fullCalendar({
+      defaultDate: $fecha,
+      editable: false,
+      eventLimit: true, // allow "more" link when too many events
+      lang: 'es',
+      eventOrder: 'id',
+
+       eventClick: function(calEvent, jsEvent, view) {
+        console.log(calEvent.descripcion);
+        }
+      
+   
+          });//end calendar//
+
+
+      var cant=response.length;
+
+           var events=[];
+            var i;
+
+            for(i=0;i<cant;i++){
+
+             events.push({
+                        title: response[i]['destinadoA']+"\n" + response[i]['nombreCurso']+"\n"+response[i]['desCurso'],
+                        start: response[i]['fechaI'],
+                        end: response[i]['fechaE'], // will be parsed
+                        descripcion:response[i]['descripcion']
+                    });
+
+                }
+
+
+
+
+
+           $('#calendar').fullCalendar('addEventSource', events);  
          //$('#calendar').fullCalendar('refetchEvents');
+         
+
+   
+
+
+
+
+
 
                        
 
-                }
-        });
+                }//en succes
+        
+
+
+        });//en ajax
+
 
 
 

@@ -124,6 +124,23 @@ public function fechaCurso()
 
 
 
+public function grillaEdit()
+{
+
+	
+	
+}
+
+
+
+
+
+
+
+
+
+
+
 }//end class
 
 

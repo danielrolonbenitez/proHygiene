@@ -62,4 +62,9 @@ route::get('/loadEvent','CalendarioController@cargarEvento');
 
 route::get('/r','CalendarioController@r');
 
-//cargar todos  los  eventos mediante //
+
+
+// editar grilla inscripcion//
+route::get('ajaxEditGrilla','CursoController@grillaEdit');
+
+

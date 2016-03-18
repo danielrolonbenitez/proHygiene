@@ -127,6 +127,16 @@
 					<!--end table-->
 
 
+
+
+
+        <!--begin script-->
+<script src="{{ asset('js/jquery.min.js')}}"></script>
+  <script src="{{ asset('js/bootstrap.js')}}"></script>
+
+
+
+
 <script>
 
 function guardar(){
@@ -179,7 +189,7 @@ function  cargar(){
 
 						                
 
-						    $("#grilla").find('tbody').append("<tr id='"+data[0]['idCursoInscripto']+"'><td class='setborder'><input type='text' class='resetborder' value='"+data[0]["nombre"]+"'/></td><td class='setborder'>"+data[0]["fecha"]+"</td><td class='setborder'>dad@hotmail.com</td><td class='setborder'>admin</td><td class='setborder'>skype</td><td><i onclick='eliminar("+data[0]['idCursoInscripto']+")' class='glyphicon glyphicon-trash'></i></td></tr>");
+						    $("#grilla").find('tbody').append("<tr id='"+data[0]['idCursoInscripto']+"'><td class='setborder'>"+data[0]["nombre"]+"</td><td class='setborder'>"+data[0]["fecha"]+"</td><td class='setborder'>dad@hotmail.com</td><td class='setborder'>admin</td><td class='setborder'><input type='text' class='resetborder gridEdit' value='' onclick='editar()' /></td><td><i onclick='eliminar("+data[0]['idCursoInscripto']+")' class='glyphicon glyphicon-trash'></i></td></tr>");
 			                    
 							}
         			});
@@ -244,11 +254,6 @@ $('select#curso').on('change',function(){
 function eliminar(id){
 
 
-
-//var id=id;
-
-//alert(id);
-
       
  var parametros= {
                "id" : id,
@@ -273,7 +278,51 @@ function eliminar(id){
         });
 
 
-   
+
+
+}
+
+
+//begin editar inscriptos//
+
+function editar()
+{
+
+
+
+var id= $('.gridEdit').val();
+
+
+
+
+
+/*var parametros= {
+               "id" : id,
+                
+        };
+        $.ajax({
+                data:  parametros,
+                url:   'ajaxEditGrilla',
+                type:  'get',
+               beforeSend: function () {
+                    
+                },
+               success:  function (datos) {
+			                	
+                         
+			                    console.log(datos);
+			                  
+                          
+
+		            }
+        });
+
+
+
+
+
+*/
+
 
 
 
