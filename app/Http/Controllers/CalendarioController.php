@@ -65,8 +65,17 @@ class CalendarioController extends Controller {
 
      
         //$periodoNombre='periodo 12';
+    
 
-      $periodoNombre=Request::get('periodoNombre');
+       if(Request::get('periodoNombre')){
+      
+         $periodoNombre=Request::get('periodoNombre');
+        
+        }else{ 
+
+               $dato=DB::select("select periodoNombre from periodos group by periodoNombre order by periodoNombre desc");
+               $periodoNombre=$dato[0]->periodoNombre;
+              }
 
         //var_dump($periodoNombre)or die();
 
@@ -133,7 +142,22 @@ class CalendarioController extends Controller {
          Session::put('key',$json);
 
       return $json;
-       
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
    }
 
 

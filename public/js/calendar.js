@@ -15,19 +15,16 @@ $fecha=$y+"-"+$m+"-"+$d;
       eventOrder: '-title',
 
     events: {
-        url: 'loadEvent',
+        url: 'r',
 
-
-      function (calEvent, jsEvent, view) {
-    						
-		  console.log("helleo");
+        error: function() {
+                console.log('error');
+            }
+    
 		}
 
 
 
-
-        
-      },
    
     });//end calendar//
 

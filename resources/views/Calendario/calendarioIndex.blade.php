@@ -1,16 +1,15 @@
 @extends('app')
 @section('content')
-
 <link rel="stylesheet" href="{{ asset('css/fullcalendar.css')}}">
 
 
-<script src="{{ asset('js/moment.min.js')}}"></script>
 
 
-<script src="{{ asset('js/fullcalendar.min.js')}}"></script>
-<script src="{{ asset('js/es.js')}}"></script>
-
-
+  <div class="row">
+            <div class="col-lg-offset-2">
+            <a href="{{route('home')}}" style="color:black">< HOME</a>
+      </div>
+       </div>
 
 
 
@@ -35,8 +34,21 @@
               
 			 array_pop($array);//quito la ultimo elemento del array//   
 			
-
+              
              //var_dump($array)or die();
+
+
+
+           
+            echo'<div class="item active" style="text-align:center;color:white;font-size:20px">
+            <span>'.$activo.'</span></div>';
+
+
+
+
+
+
+
           
              foreach($array as $a){ //recorro todos  los elementos menos el ultimo que lo tengo en activo
             	echo "<div class='item' style='text-align:center;color:white;font-size:20px'>";
@@ -45,12 +57,12 @@
 
 				echo"</div>";
              }
+
+
+
+
            ?>
 
-			<div class="item active" style='text-align:center;color:white;font-size:20px'>
-            <span><?php echo $activo; ?></span>
-          
-         	 </div>
 
 
 
@@ -76,17 +88,11 @@
 
 
 
-       <div class="row">
-       	    <div class="col-lg-offset-2">
-	        	<a href="{{route('home')}}" style="color:black">< HOME</a>
-			</div>
-       </div>
-
+     
 		<div class="row">
 
 			 	<div id='calendar' class="col-lg-offset-2 col-lg-6" ></div>
-			 	
-
+        
 
 		</div>
 	         
@@ -97,29 +103,95 @@
 					<div  class="col-lg-offset-5 "> <a class="btn btn-default" href="{{route('inscripcion')}}">INSCRIPCIÓN</a></div>
 	         </div>
 
+@endsection
 
 
-<script src="{{ asset('js/calendar.js')}}"></script>
+
 
 
 
 <!--script envia por ajax el valor que tiene la caja -->
-
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+<script src="{{ asset('js/moment.min.js')}}"></script>
+<script src="{{ asset('js/fullcalendar.min.js')}}"></script>
+<script src="{{ asset('js/es.js')}}"></script>
 
 <!--script envia por ajax el valor que tiene la caja -->
 <script>
-  
- var param=$('.active').find('span').html();
 
 
-function presione(){
-
-  //almacena los alumno iscriptos por get//
-
-  param=$('.active').find('span').html();
 
 
-  
+    
+$(document).ready(function(){
+     $date = new Date();
+    $d = $date.getDate();
+   $m = $date.getMonth()+1;
+    $y = $date.getFullYear();
+    $fecha=$y+"-"+$m+"-"+$d;
+
+    $('#calendar').fullCalendar({
+      defaultDate: $fecha,
+      editable: false,
+      eventLimit: true, // allow "more" link when too many events
+      lang: 'es',
+      eventOrder: '-title',
+
+   
+    });//end calendar//
+
+     $.ajax({
+                
+                url:   'r',
+                type:  'get',
+               beforeSend: function () {
+                    
+                },
+               success:  function (response) {
+                        
+             
+                         
+                console.log(response);
+         $('#calendar').fullCalendar("removeEvents");        
+         $('#calendar').fullCalendar('addEventSource', response);      
+         //$('#calendar').fullCalendar('refetchEvents');
+
+                       
+
+                }
+        });
+
+
+
+
+
+
+
+
+
+
+
+});//end document//
+
+
+ 
+
+
+
+
+
+var param;
+var b=0;
+function presione(){//crea una bandera  para obtener el  texto del siguente html()//;
+
+if(b==0){
+  param=$(".active").closest('div').next().find('span').html();
+b=1;
+}else{param=$(".active").closest('div').prev().find('span').html(); b=0;}
+ 
+
+
        var parametros = {
                "periodoNombre" : param,
                 
@@ -135,66 +207,23 @@ function presione(){
                         
              
                          
-
-
-
-                       
-
-                }
-        });
-
-  //alert("hola"+param);
-
- 
-
-
-
-
-}//en pesione
-
-
-
-
-
- //envia el  valor del parametro cuando se carga la pagina//
-
- var parametros = {
-               "periodoNombre" : param,
-                
-        };
-
-
-
-  $.ajax({
-                data:  parametros,
-                url:   'r',
-                type:  'get',
-               beforeSend: function () {
-                    
-                },
-               success:  function (response) {
-                        
-                          console.log(response+"nome");
-
-                           
-
-
-
-
+                console.log(response);
+         $('#calendar').fullCalendar("removeEvents");        
+         $('#calendar').fullCalendar('addEventSource', response);      
+         //$('#calendar').fullCalendar('refetchEvents');
 
                        
 
                 }
         });
 
+  }//end function presione;
 
 
 
 
 
 
-
-//carga fomulario//
 
 
 
@@ -203,10 +232,3 @@ function presione(){
 </script>
 
 
-
-
-
-
-
-
-@endsection
