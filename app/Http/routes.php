@@ -11,18 +11,42 @@
 |
 */
 
-Route::get('/',['as'=>'home',function(){
 
-	return view('Curso.index');
-}]);
+/*acceso a el panel de administracion*/
+Route::get('/admin',['as'=>'login','uses'=>'AdminController@index']);
 
-route::get('/inscripcion',['as'=>'inscripcion','uses'=>'CursoController@inscripcion']);
+Route::post('/validaUser',['as'=>'validaUser','uses'=>'AdminController@validaUser']);
+
+Route::get('/panel',['as'=>'panel','uses'=>'AdminController@panel']);
+
+Route::get('logout','Auth\AuthController@getLogout');
+
+
+Route::group(['middleware' => 'auth'], function()
+{
+
+Route::get('/pantillaExcel',['as'=>'plantillaExcel','uses'=>'AdminController@plantillaExcel']);
+
+});
+
+/**/
+
+
+
+
+
+
+
+
+Route::get('/',['as'=>'home','uses'=>'CursoController@index']);
+
+Route::get('/inscripcion',['as'=>'inscripcion','uses'=>'CursoController@inscripcion']);
 
 
 
 //ver calendario//
 
-route::get('/calendario',['as'=>'vercalendario','uses'=>'CalendarioController@index']);
+Route::get('/calendario',['as'=>'vercalendario','uses'=>'CalendarioController@index']);
 
 
 
@@ -36,11 +60,11 @@ route::get('/calendario',['as'=>'vercalendario','uses'=>'CalendarioController@in
 
 //carga las fechas que le corresponde a cada curso//
 
-route::get('ajaxFechaCurso','CursoController@fechaCurso');
+Route::get('ajaxFechaCurso','CursoController@fechaCurso');
 
 //alamacena las inscripciones//
 
-route::get('storeForm','CursoController@almacena');
+Route::get('storeForm','CursoController@almacena');
 
 
 
@@ -65,6 +89,8 @@ route::get('/r','CalendarioController@r');
 
 
 // editar grilla inscripcion//
-route::get('ajaxEditGrilla','CursoController@grillaEdit');
+//route::get('ajaxEditGrilla','CursoController@grillaEdit');
 
 
+//completa los email de usuarios//
+route::get('listUsersWp','CursoController@listUsersWp');

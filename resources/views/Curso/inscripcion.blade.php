@@ -12,6 +12,14 @@
 
 .resetborder{border:none!important;}
 
+.fondo{
+	background-color:#A9C4EB;
+}
+
+.setInput{
+ padding: 5px;
+ margin-left: 10px;
+}
 
 </style>
 
@@ -20,11 +28,11 @@
 
 	<div class="col-lg-6 col-lg-offset-4">
 		 <a href="{{route('home')}}" style="color:black;display:inline-block">< HOME</a>
-		<div style="margin-top:10px;color:white;text-align:center;background-color:blue;padding:5px 0px 5px 0px;border-radius:5px">
-          <span style="font-weight:bold;font-size:20px">Inscripción a Cursos Periodo 12</span>
-           <a class="aReset" style="float:right;color:white;padding-right:10px;padding-top:5px">Ver Plan</a>
+		<div style="margin-top:10px;color:white;text-align:center;background-color:#286BCC;padding:5px 0px 5px 0px;border-radius:5px">
+          <span style="font-weight:bold;font-size:20px;">Inscripción a Cursos {{$periodoNombre}}</span>
+           <a class="aReset" href="{{route('vercalendario')}}" style="float:right;color:white;padding-right:10px;padding-top:5px">Ver Plan</a>
 		</div>
-		<div style="font-weight:bold;margin-top:5px;">Inscripto de:Pablo killian</div><br>
+		<div style="font-weight:bold;margin-top:5px;">Inscripto de:{{$userLoginWp[0]->display_name}}</div><br>
 			
 		
 
@@ -35,14 +43,14 @@
       
        <div class="row"><!--begin form-->
 						
-			<div class="col-lg-6 col-lg-offset-4">	
-					<form  class="form-inline" style="float:left" >
-						<!--input type="hidden" name="_token" value="{{ csrf_token() }}" /-->
-
-						        <div class="form-group">
-
-                                     
-									<select class="form-control" name="curso" id="curso"  style="width:125px">
+				<div class="col-lg-offset-4" style="box-sizing:border-box">
+					<form style="float:left" >
+						<input type="hidden" id="periodoNombre" name="periodoNombre" value="{{$periodoNombre}}" />
+							
+						       
+                     
+                                    
+									<select class="setInput" name="curso" id="curso" style="width:150px;margin-left:15px">
 										 <option id="remove">Cursos</option>
 
 										<?php
@@ -59,21 +67,25 @@
 
 										
 									</select>
+								
 
+								
+									<input  type="text" class="setInput" style="margin-left:15px;width:90px"  id="fecha" name="fecha" value="Fecha"></input>
+								
+								
+									<input class="setInput" type="email" style="margin-left:15px;width:150px"  placeholder="Email" name="email" id="email" value="" >
 
-
-									<input  type="text" class="form-control" style="width:100px" id="fecha" name="fecha" value="Fecha"></input>
-
-									<input class="form-control" type="email" placeholder="Email" name="email" id="email" style="width:280px" />
-									
-								</div>
+									<input class="setInput" type="text" style="margin-left:15px;width:150px"  placeholder="Skype" name="skype" id="skype" >		
+					
+							
 
 					</form>
-					<button  class="btn btn-default" style="width:150px;" id="agregar"  onclick="guardar()">AGREGAR</button>
-                 
-             </div>
+				
+					
+                <button  class="btn btn-default"  id="agregar"  onclick="guardar()" style="width:100px">AGREGAR</button>
+             
 
-
+            </div>
 					
 
      </div><br><!--end form-->
@@ -88,12 +100,12 @@
 
 							<table  style="width:100%" id="grilla">
 								<thead>
-									      <tr>
-										  		<td align="center" class="setborder alto">Curso</td>
-										 		<td align="center" class="setborder alto">Fecha</td>
-										  		<td align="center"class="setborder alto" >Email</td>
-										  		<td align="center" class="setborder alto">Role /Distribución</td>
-										  		<td align="center" class="setborder alto">Skype</td>
+									      <tr style="font-weight:bold;text-decoration:underline">
+										  		<td align="center" class="setborder alto fondo">Curso</td>
+										 		<td align="center" class="setborder alto fondo">Fecha</td>
+										  		<td align="center"class="setborder alto fondo" >Email</td>
+										  		<td align="center" class="setborder alto fondo">Role /Distribución</td>
+										  		<td align="center" class="setborder alto fondo">Skype</td>
 										  		<td></td>
 												
 										  </tr>
@@ -133,47 +145,90 @@
         <!--begin script-->
 <script src="{{ asset('js/jquery.min.js')}}"></script>
   <script src="{{ asset('js/bootstrap.js')}}"></script>
+  <script src="{{ asset('js/jquery-ui.js')}}"></script>
 
 
 
 
 <script>
+/* uso de jquery autocomplete y ajax para los campos de email*/
+
+$("#email").on('keyup', function(){
+									var valor=$(this).val();
+
+									var uwp = {"valor" : valor,};
+
+							         $.ajax({
+												                data:  uwp,
+												                url:   'listUsersWp',
+												                type:  'get',
+												               beforeSend: function () {
+												                    
+												                },
+												               success:  function (response) {
+															                	
+																// console.log(response);
+																					         
+																$( "#email" ).autocomplete({
+													     									source: response
+													     								   });
+
+													    									  }
+										 }); 
+
+
+								});//end users list
+
+ 
+
+
+/**/
+
+
+
+
+
+
 
 function guardar(){
 
 	//almacena los alumno iscriptos por get//
-  var curso=$("#curso").val();
+	              
+				   var curso=$("#curso").val();
+				 var email=$("#email").val();
+				   var skype=$("#skype").val();
+				   var periodoNombre=$('#periodoNombre').val();
 
- 
-
-	var param = {
-               "curso" : curso,
-                
-        };
-
-
+			if(email!==''){	  
+				 var param = { "curso" : curso,"email" : email,"skype":skype,"periodoNombre":periodoNombre,};
 
 
-					 $.ajax({
-					                data:  param,
-					                url:   'storeForm',
-					                type:  'get',
-					               beforeSend: function () {
-					                    
-					                },
-					               success:  function () {
-								                	
-								             
-								                    
 
 
-							          }
-					        });
+									 $.ajax({
+									                data:  param,
+									                url:   'storeForm',
+									                type:  'get',
+									               beforeSend: function () {
+									                    
+									                },
+									               success:  function () {
+												                	
+												             cargar();
+												             $("#email").val(' ');//set val again to empty
+												             $("#skype").val(' ');
+												                    	
+												                    	 }
+									        });
 
 
- setTimeout ("cargar()", 200); 
 
-}//en guardar
+                    
+
+
+				}else{alert("debe ingresar un email")};
+
+				}//en guardar
 
 
 function  cargar(){
@@ -189,7 +244,7 @@ function  cargar(){
 
 						                
 
-						    $("#grilla").find('tbody').append("<tr id='"+data[0]['idCursoInscripto']+"'><td class='setborder'>"+data[0]["nombre"]+"</td><td class='setborder'>"+data[0]["fecha"]+"</td><td class='setborder'>dad@hotmail.com</td><td class='setborder'>admin</td><td class='setborder'><input type='text' class='resetborder gridEdit' value='' onclick='editar()' /></td><td><i onclick='eliminar("+data[0]['idCursoInscripto']+")' class='glyphicon glyphicon-trash'></i></td></tr>");
+						    $("#grilla").find('tbody').append("<tr id='"+data[0]['idCursoInscripto']+"'><td class='setborder'>"+data[0]["nombre"]+"</td><td class='setborder'>"+data[0]["fecha"]+"</td><td class='setborder'>"+data[0]["email"]+"</td><td class='setborder'>Ninguno</td><td class='setborder'>"+data[0]['skype']+"</td><td><i onclick='eliminar("+data[0]['idCursoInscripto']+")' class='glyphicon glyphicon-trash'></i></td></tr>");
 			                    
 							}
         			});
@@ -209,42 +264,31 @@ function  cargar(){
 //carg la fehca segun la opcion elegida//
 
 $('select#curso').on('change',function(){
-   
-//$('#curso').find('#remove').remove().end();//remuevo el placeholder//
- 
-   var valor = $(this).val();
-   
-   
+										    var valor = $(this).val();
+										   
+										   var parametros = {"valor" : valor, };
+														        $.ajax({
+														                data:  parametros,
+														                url:   'ajaxFechaCurso',
+														                type:  'get',
+														               beforeSend: function () {
+														                    
+														                },
+														               success:  function (response) {
+																	                	
+																		//console.log(response);
+																		$("#fecha").find("value").remove();
 
-//alert("hello");
-
-
-       var parametros = {
-               "valor" : valor,
-                
-        };
-        $.ajax({
-                data:  parametros,
-                url:   'ajaxFechaCurso',
-                type:  'get',
-               beforeSend: function () {
-                    
-                },
-               success:  function (response) {
-			                	
-			                    //console.log(response);
-			                    $("#fecha").find("value").remove();
-
-			                    $("#fecha").attr("value",response);
+																		$("#fecha").attr("value",response);
 
 
-		            }
-        });
+																            							}
+														       		 });
 
 
 
-});//end select
-
+										});//end select
+						
 
 
 //elimina de la grilla//
@@ -253,12 +297,7 @@ $('select#curso').on('change',function(){
 
 function eliminar(id){
 
-
-      
- var parametros= {
-               "id" : id,
-                
-        };
+ var parametros= {"id" : id,};
         $.ajax({
                 data:  parametros,
                 url:   'ajaxDeleteGrilla',
@@ -269,13 +308,11 @@ function eliminar(id){
                success:  function (datos) {
 			                	
                            
-                            $("#"+datos+"").remove();
-			                    console.log(datos);
+                $("#"+datos+"").remove();
+			     console.log(datos);
 			                  
-                          
-
-		            }
-        });
+                          					}
+       			 });
 
 
 
@@ -283,21 +320,18 @@ function eliminar(id){
 }
 
 
-//begin editar inscriptos//
+/*begin editar inscriptos
 
-function editar()
-{
+$( ".gridEdit" ).change(function(){
 
+var id=id;
+var skype=$(this).val();
 
-
-var id= $('.gridEdit').val();
-
-
-
-
-
+alert("hello");
+});
 /*var parametros= {
                "id" : id,
+               "skype":skype,
                 
         };
         $.ajax({
@@ -315,18 +349,11 @@ var id= $('.gridEdit').val();
                           
 
 		            }
-        });
+        });*/
 
 
 
-
-
-*/
-
-
-
-
-}
+/*}*/
 
 
 

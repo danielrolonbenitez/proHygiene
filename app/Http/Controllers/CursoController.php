@@ -4,6 +4,7 @@ use DB;
 use App\CursosInscripto;
 use Request;
 use Redirect;
+use Session;
 
 class CursoController extends Controller {
 
@@ -29,36 +30,81 @@ class CursoController extends Controller {
 	 * Show the application dashboard to the user.
 	 *
 	 * @return Response
+
 	 */
+
+	public function index()
+	{    
+        /*guarda la session del usuario logeado en wordpress*/
+        session_start();
+        $idSession=3;//$_SESSION['pg_user_id'];
+		Session::put('idSession', $idSession);
+         //$i=session::get('idSession');
+         //var_dump($i);
+        
+		return view('Curso.index');
+	}
+
+
+
+
+
+
+
+
+
+
 	public function inscripcion()
 	{
-		$periodos=DB::select("select * from periodos join cursos on periodos.idCursoF=cursos.idCurso");
+	
+         //obtener  los datos de el  usuario logeado en wordpress de wordpress//
+
+		$idLoginWp=Session::get('idSession');
+		$userLoginWp=DB::connection('wordpress')->select("select  * from wp_pg_users as p join wp_users as w on p.wp_user_id=w.id where p.id='{$idLoginWp}'");
+		
+        //var_dump($wordpres)or die();
+
+
+
+        
+
+        //obtengo el ultimo periodo//
+        $periodoNombre=DB::select("select periodoNombre from periodos order by periodoNombre desc limit 1");
+
+        $periodoNombre=$periodoNombre[0]->periodoNombre;
+
+
+
+		$periodos=DB::select("select * from periodos join cursos on periodos.idCursoF=cursos.idCurso where periodoNombre='{$periodoNombre}'");
 
 		//var_dump($periodos) or die();
 
-		return view('Curso.inscripcion')->with("periodos",$periodos);
-	}
+		return view('Curso.inscripcion')->with("periodos",$periodos)->with('periodoNombre',$periodoNombre)->with('userLoginWp',$userLoginWp);
+	} 
 
 
 
 	public function almacena()
 	{
-       
+        
+         $idFacilitador=Session::get('idSession');
+
 		
 
 
           $cursos=new CursosInscripto();
 
           $cursos->idperiodoF=Request::get('curso');
-          $cursos->idUserAlta=1;  //almacenar el id que viene desde wordpress//
-		  $cursos->idUserInscripto=1;     // procesar  el email almacenar el id  que viene desde el worpres buscar el id en una consulta//
-          
+          $cursos->periodoNombre=Request::get('periodoNombre');
+          $cursos->idFacilitador=$idFacilitador;//almacenar el id que viene desde wordpress y se recupera de la session//
+          $nombreFacilitador=DB::connection('wordpress')->select("select  * from wp_pg_users as p join wp_users as w on p.wp_user_id=w.id where p.id='{$idFacilitador}'"); //obtiene  el nombre del facilitador
+          $cursos->nombreFacilitador=$nombreFacilitador[0]->display_name;
+          $email=Request::get('email');
+          $idEmail=DB::connection('wordpress')->select("select id from wp_users  where user_email='{$email}'");
+		  $cursos->idUserInscripto=$idEmail[0]->id;   // procesar  el email almacenar el id  que viene desde el worpres buscar el id en una consulta//
+          $cursos->email=$email;
+          $cursos->skype=Request::get('skype');
           $cursos->save();
-
-         
-          /*devuelve los udarios agregados*/
-
-          //$inscriptos=DB::select("select * from cursos_inscriptos  order by idCursoInscripto desc");
 
           //var_dump($inscriptos)or die();
           
@@ -124,12 +170,47 @@ public function fechaCurso()
 
 
 
-public function grillaEdit()
+/*public function grillaEdit()
 {
+   $id=Request::get('id');
+   $skype=Request::get('skype');
+    DB::table('cursos_inscriptos')
+	            ->where('idCursoInscripto', $id)
+	            ->update(array('skype' => $skype));
+	
+	
+}*/
 
-	
-	
+
+
+
+public function listUsersWp()
+{
+   /*obtengo la letra para buscar el  email */
+  $emailSearch=Request::get('valor');
+   
+  $userEmailSearch=DB::connection('wordpress')->select(" select user_email from wp_users  where user_email like '%{$emailSearch}%'");
+		
+  //var_dump($userEmailSearch) or die();
+       foreach($userEmailSearch as $userEmail)
+       {
+       		
+
+       		$ArrayEmail[]=$userEmail->user_email;
+       }
+
+
+   
+
+
+
+
+return  $ArrayEmail;
+
 }
+
+
+
 
 
 

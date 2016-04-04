@@ -6,7 +6,7 @@ class CursosInscripto extends Model {
 
 protected $table='cursos_inscriptos';
 
-protected $fillable = ['curso'];
+protected $fillable = ['curso','email','skype'];
 
 
 

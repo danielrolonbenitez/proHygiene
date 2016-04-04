@@ -64,6 +64,27 @@ return [
 			'strict'    => false,
 		],
 
+
+		'wordpress' => [
+			'driver'    => 'mysql',
+			'host'      => env('wordpress_HOST', 'localhost'),
+			'database'  => env('wordpress_DATABASE', 'forge'),
+			'username'  => env('wordpress_USERNAME', 'forge'),
+			'password'  => env('wordpress_PASSWORD', ''),
+			'charset'   => 'utf8',
+			'collation' => 'utf8_unicode_ci',
+			'prefix'    => '',
+			'strict'    => false,
+		],
+
+
+
+
+
+
+
+
+
 		'pgsql' => [
 			'driver'   => 'pgsql',
 			'host'     => env('DB_HOST', 'localhost'),
